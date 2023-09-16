@@ -4,26 +4,6 @@ import { FaLinkedin } from "react-icons/fa";
 import { PiGithubLogoFill, PiYoutubeLogoFill } from "react-icons/pi";
 
 export default function PreviewPage() {
-    let links = [
-        {
-            Icon: PiGithubLogoFill,
-            name: "Github",
-            url: "#",
-            color: "black",
-        },
-        {
-            Icon: PiYoutubeLogoFill,
-            name: "Youtube",
-            url: "#",
-            color: "#ef383a",
-        },
-        {
-            Icon: FaLinkedin,
-            name: "Linkedin",
-            url: "#",
-            color: "#2d69ff",
-        },
-    ];
 
     return (
         <>

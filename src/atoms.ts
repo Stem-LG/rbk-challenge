@@ -9,3 +9,12 @@ export const profileAtom = atom({
     lastname:"",
     email:"",
 });
+
+export const toastAtom = atom("");
+
+export function showToast(message: string, setToast) {
+    setToast(message);
+    setTimeout(() => {
+        setToast("");
+    }, 3000);
+}

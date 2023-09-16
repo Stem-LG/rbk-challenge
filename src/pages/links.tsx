@@ -4,6 +4,7 @@ import PhonePreview from "@/sections/phone_preview";
 import { Box } from "@mui/material";
 
 export default function Home() {
+
     return (
         <>
             <TopAppBar selectedId={0}/>

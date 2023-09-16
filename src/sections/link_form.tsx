@@ -2,13 +2,15 @@ import { Box, Button, Divider, InputAdornment, MenuItem, TextField, Typography, 
 import { PiEqualsLight, PiGithubLogoFill, PiLinkBold, PiYoutubeLogoFill } from "react-icons/pi";
 import { FaLinkedin } from "react-icons/fa";
 import { AiFillStar } from "react-icons/ai";
-import { useAtom } from "jotai";
-import { linksAtom } from "@/atoms";
+import { useAtom, useSetAtom } from "jotai";
+import { linksAtom, showToast, toastAtom } from "@/atoms";
 import { platforms } from "@/utils/consts";
 import { FieldErrors, FieldValues, UseFormRegister, useForm } from "react-hook-form";
+import { useState } from "react";
 
 export default function LinkForm() {
     const [links, setLinks] = useAtom(linksAtom);
+    const setToast = useSetAtom(toastAtom);
 
     function addEmptyLink() {
         setLinks([...links, { platform: 0 }]);
@@ -16,7 +18,32 @@ export default function LinkForm() {
 
     function saveToLocalStorage() {
         localStorage.setItem("links", JSON.stringify(links));
+        showToast("💾 Your changes have been successfully saved!", setToast);
     }
+
+    const [draggedItem, setDraggedItem] = useState(null);
+
+    const handleDragStart = (e, item) => {
+        setDraggedItem(item);
+    };
+
+    const handleDragOver = (e, targetItem) => {
+        e.preventDefault();
+        if (draggedItem === null) return;
+
+        const updatedLinks = [...links];
+        const draggedIndex = links.findIndex((item) => item === draggedItem);
+        const targetIndex = links.findIndex((item) => item === targetItem);
+
+        updatedLinks.splice(draggedIndex, 1);
+        updatedLinks.splice(targetIndex, 0, draggedItem);
+
+        setLinks(updatedLinks);
+    };
+
+    const handleDragEnd = () => {
+        setDraggedItem(null);
+    };
 
     const {
         register,
@@ -59,7 +86,15 @@ export default function LinkForm() {
             </Button>
 
             {links.map((link, key) => (
-                <LinkBox key={key} index={key} register={register} errors={errors} />
+                <LinkBox
+                    key={key}
+                    index={key}
+                    register={register}
+                    errors={errors}
+                    onDragStart={(e) => handleDragStart(e, link)}
+                    onDragOver={(e) => handleDragOver(e, link)}
+                    onDragEnd={handleDragEnd}
+                />
             ))}
             <Divider />
             <Box sx={{ width: "100%", display: "flex", justifyContent: "flex-end", mt: "24px" }}>
@@ -71,15 +106,7 @@ export default function LinkForm() {
     );
 }
 
-function LinkBox({
-    index,
-    register,
-    errors,
-}: {
-    index: number;
-    register: UseFormRegister<FieldValues>;
-    errors: FieldErrors<FieldValues>;
-}) {
+function LinkBox({ index, register, errors, onDragStart, onDragOver, onDragEnd }: any) {
     const [links, setLinks] = useAtom(linksAtom);
 
     function removeLink() {
@@ -115,6 +142,10 @@ function LinkBox({
     return (
         <Box
             sx={{ p: "20px", pt: "10px", borderRadius: "10px", bgcolor: theme.palette.background.default, mb: "24px" }}
+            draggable={true}
+            onDragStart={onDragStart}
+            onDragOver={onDragOver}
+            onDragEnd={onDragEnd}
         >
             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: "5px", color: "#7d7d7d" }}>

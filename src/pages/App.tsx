@@ -1,18 +1,10 @@
 import { theme } from "@/theme";
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
-import "../styles/global.css";
 import { Box, CssBaseline, ThemeProvider } from "@mui/material";
-
 import type { AppProps } from "next/app";
 import { useEffect } from "react";
-import { atom, useAtomValue, useSetAtom } from "jotai";
-import { linksAtom, profileAtom, toastAtom } from "@/atoms";
+import { useAtomValue, useSetAtom } from "jotai";
+import { linksAtom, profileAtom } from "@/atoms";
 import NotificationToast from "@/components/toast";
-
-
 
 export default function App({ Component, pageProps }: AppProps) {
     const setLinks = useSetAtom(linksAtom);

@@ -1,7 +1,7 @@
-import { profileAtom } from "@/atoms";
+import { profileAtom, showToast, toastAtom } from "@/atoms";
 import { Box, Button, ButtonBase, Divider, TextField, Typography, useTheme } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import NextImage from "next/image";
 import { LiaImageSolid } from "react-icons/lia";
 import { useForm } from "react-hook-form";
@@ -14,6 +14,7 @@ export default function ProfileDetails() {
     const [imageError, setImageError] = useState("");
 
     const [profile, setProfile] = useAtom(profileAtom);
+    const setToast = useSetAtom(toastAtom);
 
     function updateFirstName(firstName) {
         setProfile({ ...profile, firstname: firstName });
@@ -55,6 +56,8 @@ export default function ProfileDetails() {
 
     function saveToLocalStorage() {
         localStorage.setItem("profile", JSON.stringify(profile));
+        showToast("💾 Your changes have been successfully saved!", setToast);
+
     }
 
     const {
