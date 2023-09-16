@@ -8,16 +8,14 @@ import { Box, CssBaseline, ThemeProvider } from "@mui/material";
 
 import type { AppProps } from "next/app";
 import { useEffect } from "react";
-import { atom, useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { linksAtom, profileAtom, toastAtom } from "@/atoms";
 import NotificationToast from "@/components/toast";
-
-
 
 export default function App({ Component, pageProps }: AppProps) {
     const setLinks = useSetAtom(linksAtom);
     const setProfile = useSetAtom(profileAtom);
-    const toastValue = useAtomValue(toastAtom);
+    const [toastValue, _] = useAtom(toastAtom);
 
     useEffect(() => {
         setLinks(JSON.parse(localStorage.getItem("links") || "[]"));

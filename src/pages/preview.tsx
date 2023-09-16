@@ -1,9 +1,13 @@
+import { showToast, toastAtom } from "@/atoms";
 import { Preview } from "@/sections/phone_preview";
 import { AppBar, Toolbar, Button, Box } from "@mui/material";
-import { FaLinkedin } from "react-icons/fa";
-import { PiGithubLogoFill, PiYoutubeLogoFill } from "react-icons/pi";
+import { useSetAtom } from "jotai";
 
 export default function PreviewPage() {
+
+    const setToast = useSetAtom(toastAtom);
+
+    
 
     return (
         <>
@@ -27,7 +31,7 @@ export default function PreviewPage() {
                     <Button href="/links" variant="outlined" sx={{ borderWidth: "2px", borderRadius: "8px" }}>
                         Back to Editor
                     </Button>
-                    <Button variant="contained" sx={{ borderWidth: "2px", borderRadius: "8px" }}>
+                    <Button variant="contained" sx={{ borderWidth: "2px", borderRadius: "8px" }} onClick={()=>showToast("📄 Link Copied To Clipboard!",setToast)}>
                         Share Link
                     </Button>
                 </Toolbar>

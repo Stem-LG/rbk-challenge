@@ -6,7 +6,7 @@ import NextImage from "next/image";
 import { LiaImageSolid } from "react-icons/lia";
 import { useForm } from "react-hook-form";
 import { checkImageDimensions } from "@/utils/validate";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function ProfileDetails() {
     const theme = useTheme();
@@ -14,6 +14,7 @@ export default function ProfileDetails() {
     const [imageError, setImageError] = useState("");
 
     const [profile, setProfile] = useAtom(profileAtom);
+
     const setToast = useSetAtom(toastAtom);
 
     function updateFirstName(firstName) {
@@ -57,21 +58,24 @@ export default function ProfileDetails() {
     function saveToLocalStorage() {
         localStorage.setItem("profile", JSON.stringify(profile));
         showToast("💾 Your changes have been successfully saved!", setToast);
-
     }
 
     const {
         register,
         handleSubmit,
         formState: { errors },
+        setValue,
     } = useForm();
 
+    useEffect(() => {
+        setValue("firstname", profile.firstname);
+        setValue("lastname", profile.lastname);
+    });
     return (
         <Box
             sx={{
                 height: "100%",
                 minHeight: "320px",
-                border: "1px solid blue",
                 borderRadius: "12px",
                 p: "40px",
                 bgcolor: "white",
@@ -151,7 +155,7 @@ export default function ProfileDetails() {
                         Use PNG, JPG, or BMP format.
                         <br />
                     </Typography>
-                    <Typography sx={{ color: "red", fontSize:"13px" }}>{imageError}</Typography>
+                    <Typography sx={{ color: "red", fontSize: "13px" }}>{imageError}</Typography>
                 </Box>
             </Box>
             <Box

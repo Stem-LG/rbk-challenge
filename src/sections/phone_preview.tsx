@@ -77,6 +77,7 @@ export function Preview({ frame = false }) {
                     "::-webkit-scrollbar": {
                         display: "none",
                     },
+                    width: "100%",
                 }}
             >
                 {links.map(({ platform, url }, index) => {

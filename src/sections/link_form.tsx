@@ -6,7 +6,7 @@ import { useAtom, useSetAtom } from "jotai";
 import { linksAtom, showToast, toastAtom } from "@/atoms";
 import { platforms } from "@/utils/consts";
 import { FieldErrors, FieldValues, UseFormRegister, useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function LinkForm() {
     const [links, setLinks] = useAtom(linksAtom);
@@ -47,6 +47,7 @@ export default function LinkForm() {
 
     const {
         register,
+        unregister,
         handleSubmit,
         formState: { errors },
     } = useForm();
@@ -90,6 +91,7 @@ export default function LinkForm() {
                     key={key}
                     index={key}
                     register={register}
+                    unregister={unregister}
                     errors={errors}
                     onDragStart={(e) => handleDragStart(e, link)}
                     onDragOver={(e) => handleDragOver(e, link)}
@@ -106,14 +108,68 @@ export default function LinkForm() {
     );
 }
 
-function LinkBox({ index, register, errors, onDragStart, onDragOver, onDragEnd }: any) {
+function LinkBox({ index, register, unregister, errors, onDragStart, onDragOver, onDragEnd }: any) {
     const [links, setLinks] = useAtom(linksAtom);
+
+    const [registerState, setRegisterState] = useState({
+        platform: register(`links.${index}.platform`, {
+            onChange: (e) => updateplatform(e.target.value),
+        }),
+        url: register(`links.${index}.url`, {
+            required: {
+                value: true,
+                message: "Invalid Link",
+            },
+            onChange: (e) => updateLink(e.target.value),
+            validate: (value: string) => {
+                const urlPattern =
+                    /^(http(s):\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/;
+
+                let startsWith = platforms[links[index].platform].startsWith;
+
+                if (startsWith) {
+                    if (!value.startsWith(startsWith)) return "Invalid link";
+                }
+
+                return urlPattern.test(value) || "Invalid link";
+            },
+        }),
+    });
 
     function removeLink() {
         setLinks((links) => {
             return links.filter((_, i) => i != index);
         });
     }
+
+    useEffect(() => {
+        unregister(`links.${index}.platform`);
+        unregister(`links.${index}.url`);
+        setRegisterState({
+            platform: register(`links.${index}.platform`, {
+                onChange: (e) => updateplatform(e.target.value),
+            }),
+            url: register(`links.${index}.url`, {
+                required: {
+                    value: true,
+                    message: "Invalid Link",
+                },
+                onChange: (e) => updateLink(e.target.value),
+                validate: (value: string) => {
+                    const urlPattern =
+                        /^(http(s):\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/;
+
+                    let startsWith = platforms[links[index].platform].startsWith;
+
+                    if (startsWith) {
+                        if (!value.startsWith(startsWith)) return "Invalid link";
+                    }
+
+                    return urlPattern.test(value) || "Invalid link";
+                },
+            }),
+        });
+    }, [links]);
 
     function updateplatform(platformIndex) {
         setLinks(
